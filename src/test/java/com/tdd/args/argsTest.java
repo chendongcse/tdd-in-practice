@@ -1,6 +1,6 @@
 package com.tdd.args;
 
-import com.sun.source.tree.AssertTree;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -23,9 +23,20 @@ public class argsTest {
     // -Int :0
     // -String: ""
 
+    @Test
+    public void should_set_bool_true_if_flag_present() {
+        BooleanOption option = Args.parse(BooleanOption.class, "-l");
+        assertTrue(option.logging());
+    }
+
+    static record BooleanOption(@Option("l")boolean logging){
+
+    }
+
 
 
     @Test
+    @Disabled
     public void should_example_1(){
         Options options = Args.parse(Options.class, "-l", "-p", "8080", "-d", "/usr/logs");
         assertTrue(options.logging());
