@@ -3,8 +3,7 @@ package com.tdd.args;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class argsTest {
     // -l -p 8080 -d /usr/logs
@@ -27,6 +26,12 @@ public class argsTest {
     public void should_set_bool_true_if_flag_present() {
         BooleanOption option = Args.parse(BooleanOption.class, "-l");
         assertTrue(option.logging());
+    }
+
+    @Test
+    public void should_set_bool_false_if_flag_not_present() {
+        BooleanOption option = Args.parse(BooleanOption.class);
+        assertFalse(option.logging());
     }
 
     static record BooleanOption(@Option("l")boolean logging){
