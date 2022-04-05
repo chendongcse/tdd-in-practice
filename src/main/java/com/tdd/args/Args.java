@@ -21,43 +21,11 @@ public class Args {
     }
 
     private static Object parseOption(Parameter parameter, List<String> arguments) {
-        return getOptionParser(parameter.getType()).parse(arguments, parameter.getAnnotation(Option.class));
+        return PARSERS.get(parameter.getType()).parse(arguments, parameter.getAnnotation(Option.class));
     }
 
     private static Map<Class<?>, OptionParser> PARSERS = Map.of(boolean.class, new BooleanParser(),
             int.class, new IntParser(),
             String.class, new StringParser());
 
-    private static OptionParser getOptionParser(Class<?> type) {
-        return PARSERS.get(type);
-    }
-
-    interface OptionParser{
-        Object parse(List<String> arguments, Option option);
-    }
-
-    static class BooleanParser implements OptionParser {
-        @Override
-        public Object parse(List<String> arguments, Option option) {
-            return arguments.contains("-" + option.value());
-        }
-    }
-
-    static class IntParser implements OptionParser{
-
-        @Override
-        public Object parse(List<String> arguments, Option option) {
-            int index = arguments.indexOf("-" + option.value());
-            return Integer.valueOf(arguments.get(index + 1));
-        }
-    }
-
-    static class StringParser implements OptionParser{
-
-        @Override
-        public Object parse(List<String> arguments, Option option) {
-            int index = arguments.indexOf("-" + option.value());
-            return arguments.get(index + 1);
-        }
-    }
 }
