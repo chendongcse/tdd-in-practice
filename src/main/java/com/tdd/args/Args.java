@@ -50,7 +50,14 @@ public class Args {
         return Integer.valueOf(arguments.get(index + 1));
     }
 
-    private static boolean parseBoolean(List<String> arguments, Option option) {
-        return arguments.contains("-" + option.value());
+    private static Object parseBoolean(List<String> arguments, Option option) {
+        return new BooleanParser().parse(arguments, option);
+    }
+
+    static class BooleanParser implements OptionParser {
+        @Override
+        public Object parse(List<String> arguments, Option option) {
+            return arguments.contains("-" + option.value());
+        }
     }
 }
