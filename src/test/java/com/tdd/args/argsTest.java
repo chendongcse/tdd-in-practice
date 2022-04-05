@@ -12,7 +12,7 @@ public class argsTest {
     //    -Bool
     //    -Int -p 8080
     //    -String -d /usr/logs
-    //Multi Options: -l -p 8080 -d /usr/logs
+    //Multi MultiOptions: -l -p 8080 -d /usr/logs
     //sad path:
     // -Bool -l t / -l t f
     // -Int -p / -p 8080 8081
@@ -60,15 +60,14 @@ public class argsTest {
 
 
     @Test
-    @Disabled
-    public void should_example_1(){
-        Options options = Args.parse(Options.class, "-l", "-p", "8080", "-d", "/usr/logs");
+    public void should_parse_multi_options(){
+        MultiOptions options = Args.parse(MultiOptions.class, "-l", "-p", "8080", "-d", "/usr/logs");
         assertTrue(options.logging());
         assertEquals(8080,options.port());
         assertEquals("/usr/logs",options.directory());
     }
 
-    static record Options(@Option("l") boolean logging, @Option("p") int port, @Option("d") String directory) {
+    static record MultiOptions(@Option("l") boolean logging, @Option("p") int port, @Option("d") String directory) {
 
     }
 
