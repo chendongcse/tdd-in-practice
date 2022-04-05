@@ -1,3 +1,4 @@
+
 package com.tdd.args;
 
 import java.lang.reflect.Constructor;
@@ -41,13 +42,11 @@ public class Args {
     }
 
     private static Object parseString(List<String> arguments, Option option) {
-        int index = arguments.indexOf("-" + option.value());
-        return arguments.get(index + 1);
+        return new StringParser().parse(arguments,option);
     }
 
     private static Object parseInt(List<String> arguments, Option option) {
-        int index = arguments.indexOf("-" + option.value());
-        return Integer.valueOf(arguments.get(index + 1));
+        return new IntParser().parse(arguments,option);
     }
 
     private static Object parseBoolean(List<String> arguments, Option option) {
@@ -58,6 +57,24 @@ public class Args {
         @Override
         public Object parse(List<String> arguments, Option option) {
             return arguments.contains("-" + option.value());
+        }
+    }
+
+    static class IntParser implements OptionParser{
+
+        @Override
+        public Object parse(List<String> arguments, Option option) {
+            int index = arguments.indexOf("-" + option.value());
+            return Integer.valueOf(arguments.get(index + 1));
+        }
+    }
+
+    static class StringParser implements OptionParser{
+
+        @Override
+        public Object parse(List<String> arguments, Option option) {
+            int index = arguments.indexOf("-" + option.value());
+            return arguments.get(index + 1);
         }
     }
 }
