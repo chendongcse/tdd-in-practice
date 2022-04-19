@@ -13,6 +13,9 @@ class SingleValuedParser<T> implements OptionParser<T> {
     @Override
     public T parse(List<String> arguments, Option option) {
         int index = arguments.indexOf("-" + option.value());
+        if(index+2 < arguments.size() && !arguments.get(index+2).startsWith("-")){
+            throw new TooManyArgumentsException(option.value());
+        }
         String value = arguments.get(index + 1);
         return valueParser.apply(value);
     }
