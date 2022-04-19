@@ -11,8 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanOptionParserTest {
 
@@ -21,6 +20,11 @@ public class BooleanOptionParserTest {
         TooManyArgumentsException e = assertThrows(TooManyArgumentsException.class, () ->
                 new BooleanParser().parse(Arrays.asList("-l", "t"), option("l")));
         assertEquals("l", e.getOption());
+    }
+
+    @Test
+    public void should_set_value_to_false_if_option_not_present() {
+        assertFalse(new BooleanParser().parse(Arrays.asList(), option("l")));
     }
 
 
