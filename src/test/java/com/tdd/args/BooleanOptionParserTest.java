@@ -29,7 +29,7 @@ public class BooleanOptionParserTest {
 
 
 
-    private Option option(String value) {
+    public static Option option(String value) {
         return new Option(){
 
             @Override
