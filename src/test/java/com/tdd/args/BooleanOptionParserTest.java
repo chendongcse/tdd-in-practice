@@ -23,6 +23,8 @@ public class BooleanOptionParserTest {
         assertEquals("l", e.getOption());
     }
 
+
+
     private Option option(String value) {
         return new Option(){
 
