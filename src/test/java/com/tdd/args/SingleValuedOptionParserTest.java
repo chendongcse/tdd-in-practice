@@ -20,4 +20,9 @@ public class SingleValuedOptionParserTest {
     public void should_not_accept_extra_argument_for_single_valued_option(){
         assertThrows(TooManyArgumentsException.class,() -> new SingleValuedParser<>(Integer::parseInt).parse(Arrays.asList("-p","8080","8081"),option("p")));
     }
+
+    @Test
+    public void should_not_accept_insufficient_argument_for_single_valued_option(){
+        assertThrows(InsufficientArgumentsException.class,() -> new SingleValuedParser<>(Integer::parseInt).parse(Arrays.asList("-p"),option("p")));
+    }
 }
