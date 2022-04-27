@@ -23,6 +23,8 @@ public class Args {
     }
 
     private static Object parseOption(Parameter parameter, List<String> arguments) {
+        if(!parameter.isAnnotationPresent(Option.class))
+            throw new IllegalOptionException(parameter.getName());
         return PARSERS.get(parameter.getType()).parse(arguments, parameter.getAnnotation(Option.class));
     }
 
