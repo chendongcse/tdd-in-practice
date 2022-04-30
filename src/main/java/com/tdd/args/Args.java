@@ -26,8 +26,8 @@ public class Args {
         return PARSERS.get(parameter.getType()).parse(arguments, parameter.getAnnotation(Option.class));
     }
 
-    private static Map<Class<?>, OptionParser> PARSERS = Map.of(boolean.class, SingleValuedParser.bool(),
-            int.class, SingleValuedParser.unary(0, Integer::valueOf),
-            String.class, SingleValuedParser.unary("", String::valueOf));
+    private static Map<Class<?>, OptionParser> PARSERS = Map.of(boolean.class, OptionParsers.bool(),
+            int.class, OptionParsers.unary(0, Integer::valueOf),
+            String.class, OptionParsers.unary("", String::valueOf));
 
 }
