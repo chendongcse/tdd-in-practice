@@ -9,16 +9,8 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.function.Function;
 
-import static com.tdd.args.OptionParsersTest.BooleanOptionParserTest.option;
 import static org.junit.jupiter.api.Assertions.*;
 
-//OptionParsersTest:
-// sad path:
-// TODO: - int -p/ -p 8080 8081
-// TODO: - string -d/ -d /usr/logs /usr/vars
-// default value:
-// TODO: -int :0
-// TODO: - string ""
 public class OptionParsersTest {
 
     @Nested
@@ -76,22 +68,33 @@ public class OptionParsersTest {
         public void should_set_bool_true_if_flag_present() {
             assertTrue(OptionParsers.bool().parse(Arrays.asList("-l"), option("l")));
         }
+    }
 
-
-        public static Option option(String value) {
-            return new Option(){
-
-                @Override
-                public Class<? extends Annotation> annotationType() {
-                    return Option.class;
-                }
-
-                @Override
-                public String value() {
-                    return value;
-                }
-            };
-
+    @Nested
+    class ListOptionParserTest{
+        //TODO: -g "this" "is" {"this", is"}
+        @Test
+        public void should_parse_list_value(){
+            String[] value = OptionParsers.list(String::valueOf).parse(Arrays.asList("-g", "this", "is"), option("g"));
+            assertArrayEquals(new String[]{"this", "is"},value);
         }
+        //TODO: default value []
+        //TODO: -d a throw exception
+    }
+
+    public static Option option(String value) {
+        return new Option(){
+
+            @Override
+            public Class<? extends Annotation> annotationType() {
+                return Option.class;
+            }
+
+            @Override
+            public String value() {
+                return value;
+            }
+        };
+
     }
 }
