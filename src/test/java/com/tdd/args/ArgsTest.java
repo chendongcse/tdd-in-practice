@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class argsTest {
+public class ArgsTest {
 
     @Test
     public void should_parse_multi_options() {

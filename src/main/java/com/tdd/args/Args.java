@@ -21,13 +21,16 @@ public class Args {
     }
 
     private static Object parseOption(Parameter parameter, List<String> arguments) {
-        if(!parameter.isAnnotationPresent(Option.class))
+        if (!parameter.isAnnotationPresent(Option.class))
             throw new IllegalOptionException(parameter.getName());
         return PARSERS.get(parameter.getType()).parse(arguments, parameter.getAnnotation(Option.class));
     }
 
     private static Map<Class<?>, OptionParser> PARSERS = Map.of(boolean.class, OptionParsers.bool(),
             int.class, OptionParsers.unary(0, Integer::valueOf),
-            String.class, OptionParsers.unary("", String::valueOf));
+            String.class, OptionParsers.unary("", String::valueOf),
+            String[].class, OptionParsers.list(new String[]{}, String[]::new, String::valueOf),
+            Integer[].class, OptionParsers.list(new Integer[]{}, Integer[]::new, Integer::parseInt)
+    );
 
 }
