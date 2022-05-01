@@ -63,6 +63,7 @@ public class OptionParsersTest {
         public void should_set_value_to_false_if_option_not_present() {
             assertFalse(OptionParsers.bool().parse(Arrays.asList(), option("l")));
         }
+
         //Happy path
         @Test
         public void should_set_bool_true_if_flag_present() {
@@ -71,22 +72,31 @@ public class OptionParsersTest {
     }
 
     @Nested
-    class ListOptionParserTest{
+    class ListOptionParserTest {
         //TODO: -g "this" "is" {"this", is"}
         @Test
         public void should_parse_list_value() {
             assertArrayEquals(new String[]{"this", "is"}, OptionParsers.list(new String[]{}, String[]::new, String::valueOf).parse(Arrays.asList("-g", "this", "is"), option("g")));
         }
+
         //TODO: default value []
         @Test
         public void should_use_empty_array_as_default_value() {
             assertArrayEquals(new String[]{}, OptionParsers.list(new String[]{}, String[]::new, String::valueOf).parse(Arrays.asList(), option("g")));
         }
+
         //TODO: -d a throw exception
+        @Test
+        public void should_thore_exception_when_parser_cant_parse_value() {
+            Function<String, String> parser = (it) -> {
+                throw new RuntimeException();
+            };
+            assertThrows(IllegalOptionException.class, () -> OptionParsers.list(new String[]{}, String[]::new, parser).parse(Arrays.asList(), option("g")));
+        }
     }
 
     public static Option option(String value) {
-        return new Option(){
+        return new Option() {
 
             @Override
             public Class<? extends Annotation> annotationType() {
