@@ -3,6 +3,7 @@ package com.tdd.args;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.stream.IntStream;
 
 public class OptionParsers {
@@ -15,8 +16,21 @@ public class OptionParsers {
         return (arguments, option) -> values(arguments, option, 1).map(it -> parse(it.get(0), valueParser)).orElse(defaultValue);
     }
 
-    public static <T> OptionParser<T[]> list(Function<String, T> valueParser){
-        return null;
+    public static <T> OptionParser<T[]> list(T[] defaultValue, IntFunction<T[]> generator, Function<String, T> valueParser) {
+        return (arguments, option) ->
+                values(arguments, option)
+                        .map(it -> it.stream().map(value -> parse(value, valueParser)).toArray(generator))
+                        .orElse(defaultValue);
+    }
+    private static  Optional<List<String>> values(List<String> arguments, Option option) {
+        int index = arguments.indexOf("-" + option.value());
+        if (index == -1) {
+            return Optional.empty();
+        }
+        List<String> values = values(arguments, index);
+
+        return Optional.of(values);
+
     }
 
     private static  Optional<List<String>> values(List<String> arguments, Option option, int expectedSize) {
