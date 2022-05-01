@@ -74,11 +74,14 @@ public class OptionParsersTest {
     class ListOptionParserTest{
         //TODO: -g "this" "is" {"this", is"}
         @Test
-        public void should_parse_list_value(){
-            String[] value = OptionParsers.list(new String[]{},String[]::new,String::valueOf).parse(Arrays.asList("-g", "this", "is"), option("g"));
-            assertArrayEquals(new String[]{"this", "is"},value);
+        public void should_parse_list_value() {
+            assertArrayEquals(new String[]{"this", "is"}, OptionParsers.list(new String[]{}, String[]::new, String::valueOf).parse(Arrays.asList("-g", "this", "is"), option("g")));
         }
         //TODO: default value []
+        @Test
+        public void should_use_empty_array_as_default_value() {
+            assertArrayEquals(new String[]{}, OptionParsers.list(new String[]{}, String[]::new, String::valueOf).parse(Arrays.asList(), option("g")));
+        }
         //TODO: -d a throw exception
     }
 
