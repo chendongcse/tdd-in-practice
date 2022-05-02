@@ -9,12 +9,16 @@ import java.util.Map;
 
 public class Args {
     public static <T> T parse(Class<T> optionsClass, String... args) {
-        Constructor<?> constructor = optionsClass.getDeclaredConstructors()[0];
-        List<String> arguments = Arrays.asList(args);
-        Object[] values = Arrays.stream(constructor.getParameters()).map(it -> parseOption(it, arguments)).toArray();
-
         try {
+            Constructor<?> constructor = optionsClass.getDeclaredConstructors()[0];
+            List<String> arguments = Arrays.asList(args);
+            Object[] values = Arrays.stream(constructor.getParameters()).map(it -> parseOption(it, arguments)).toArray();
+
             return (T) constructor.newInstance(values);
+        } catch (IllegalOptionException e) {
+            throw e;
+        } catch (IllegalValueException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException();
         }

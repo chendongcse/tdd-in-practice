@@ -9,20 +9,21 @@ import java.util.stream.IntStream;
 public class OptionParsers {
 
     public static OptionParser<Boolean> bool() {
-        return ((arguments, option) -> values(arguments,option,0).map(it -> true).orElse(false));
+        return ((arguments, option) -> values(arguments, option, 0).map(it -> true).orElse(false));
     }
 
     public static <T> OptionParser<T> unary(T defaultValue, Function<String, T> valueParser) {
-        return (arguments, option) -> values(arguments, option, 1).map(it -> parse(it.get(0), valueParser)).orElse(defaultValue);
+        return (arguments, option) -> values(arguments, option, 1).map(it -> parse(it.get(0), valueParser, option)).orElse(defaultValue);
     }
 
     public static <T> OptionParser<T[]> list(T[] defaultValue, IntFunction<T[]> generator, Function<String, T> valueParser) {
         return (arguments, option) ->
                 values(arguments, option)
-                        .map(it -> it.stream().map(value -> parse(value, valueParser)).toArray(generator))
+                        .map(it -> it.stream().map(value -> parse(value, valueParser, option)).toArray(generator))
                         .orElse(defaultValue);
     }
-    private static  Optional<List<String>> values(List<String> arguments, Option option) {
+
+    private static Optional<List<String>> values(List<String> arguments, Option option) {
         int index = arguments.indexOf("-" + option.value());
         if (index == -1) {
             return Optional.empty();
@@ -33,7 +34,7 @@ public class OptionParsers {
 
     }
 
-    private static  Optional<List<String>> values(List<String> arguments, Option option, int expectedSize) {
+    private static Optional<List<String>> values(List<String> arguments, Option option, int expectedSize) {
         int index = arguments.indexOf("-" + option.value());
         if (index == -1) {
             return Optional.empty();
@@ -50,8 +51,12 @@ public class OptionParsers {
 
     }
 
-    private static <T> T parse(String value, Function<String, T> valueParser) {
-        return valueParser.apply(value);
+    private static <T> T parse(String value, Function<String, T> valueParser, Option option) {
+        try {
+            return valueParser.apply(value);
+        } catch (Exception e) {
+            throw new IllegalValueException(option.value(), value);
+        }
     }
 
     private static List<String> values(List<String> arguments, int index) {

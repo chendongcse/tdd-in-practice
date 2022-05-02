@@ -93,11 +93,13 @@ public class OptionParsersTest {
 
         //TODO: -d a throw exception
         @Test
-        public void should_thore_exception_when_parser_cant_parse_value() {
+        public void should_throw_exception_when_parser_cant_parse_value() {
             Function<String, String> parser = (it) -> {
                 throw new RuntimeException();
             };
-            assertThrows(IllegalOptionException.class, () -> OptionParsers.list(new String[]{}, String[]::new, parser).parse(Arrays.asList(), option("g")));
+            IllegalValueException e = assertThrows(IllegalValueException.class, () -> OptionParsers.list(new String[]{}, String[]::new, parser).parse(Arrays.asList("-g", "this", "is"), option("g")));
+            assertEquals("g", e.getOption());
+            assertEquals("this", e.getValue());
         }
     }
 
