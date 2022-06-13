@@ -1,20 +1,21 @@
 package com.tdd.di;
 
-import java.lang.reflect.InvocationTargetException;
+import jakarta.inject.Provider;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class Context {
-    Map<Class<?>, Object> components = new HashMap<>();
     Map<Class<?>, Class<?>> componentImplementations = new HashMap<>();
+    Map<Class<?>, Provider<?>> providers = new HashMap<>();
 
     public <componentType> void bind(Class<componentType> type, componentType instance) {
-        components.put(type, instance);
+        providers.put(type, (Provider<componentType>) () -> instance);
     }
 
     public <componentType> componentType get(Class<componentType> type) {
-        if (components.containsKey(type))
-            return (componentType) components.get(type);
+        if (providers.containsKey(type))
+            return (componentType) providers.get(type).get();
         Class<?> implementation = componentImplementations.get(type);
         try {
             return (componentType) implementation.getConstructor().newInstance();

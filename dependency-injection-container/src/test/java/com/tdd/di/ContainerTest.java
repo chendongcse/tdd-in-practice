@@ -36,7 +36,6 @@ public class ContainerTest {
         //todo: abstract class
         @Nested
         public class ConstructorInjection {
-            //todo: no args constructor
             @Test
             public void should_bind_type_to_a_class_with_default_constructor() {
                 Context context = new Context();
