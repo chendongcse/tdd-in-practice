@@ -1,3 +1,5 @@
 rootProject.name = 'tdd-in-practice'
 
 include 'command-line-args-parser'
+include 'dependency-injection-container'
+
