@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Context {
-    Map<Class<?>, Class<?>> componentImplementations = new HashMap<>();
     Map<Class<?>, Provider<?>> providers = new HashMap<>();
 
     public <componentType> void bind(Class<componentType> type, componentType instance) {
@@ -14,17 +13,7 @@ public class Context {
     }
 
     public <componentType> componentType get(Class<componentType> type) {
-        if (providers.containsKey(type))
-            return (componentType) providers.get(type).get();
         return (componentType) providers.get(type).get();
-    }
-
-    private <componentType> componentType getComponentType(Class<?> implementation) {
-        try {
-            return (componentType) implementation.getConstructor().newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
     }
 
     public <ComponentType, ComponentImpl extends ComponentType>
