@@ -18,9 +18,9 @@ public class Context {
 
     public <ComponentType, ComponentImpl extends ComponentType>
     void bind(Class<ComponentType> type, Class<ComponentImpl> implementation) {
-        providers.put(type, (Provider<ComponentImpl>) () -> {
+        providers.put(type, (Provider<ComponentType>) () -> {
             try {
-                return (ComponentImpl) ((Class<?>) implementation).getConstructor().newInstance();
+                return (ComponentType) ((Class<?>) implementation).getConstructor().newInstance();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
