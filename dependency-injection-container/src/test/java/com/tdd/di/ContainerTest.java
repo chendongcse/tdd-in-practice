@@ -44,7 +44,6 @@ public class ContainerTest {
 
             }
 
-            //todo: with dependencies
             @Test
             public void should_bind_type_to_a_class_with_inject_constructor() {
                 Dependency dependency = new Dependency() {
@@ -55,9 +54,24 @@ public class ContainerTest {
                 Component instance = context.get(Component.class);
 
                 assertNotNull(instance);
-                assertSame(dependency,((ComponentWithInjectConstructor)instance).getDependency());
+                assertSame(dependency, ((ComponentWithInjectConstructor) instance).getDependency());
             }
+
             //todo: A -> B -> C
+            @Test
+            public void should_bind_type_to_a_class_with_transitive_dependencies() {
+
+                context.bind(Component.class, ComponentWithInjectConstructor.class);
+                context.bind(Dependency.class, DependencyWithInjectConstructor.class);
+                context.bind(String.class, "indirect dependency");
+
+                Component instance = context.get(Component.class);
+                assertNotNull(instance);
+
+                Dependency dependency = ((ComponentWithInjectConstructor) instance).getDependency();
+                assertNotNull(dependency);
+                assertSame("indirect dependency", ((DependencyWithInjectConstructor) dependency).getDependency());
+            }
 
 
         }
@@ -110,5 +124,18 @@ class ComponentWithInjectConstructor implements Component {
 
     public Dependency getDependency() {
         return dependency;
+    }
+}
+
+class DependencyWithInjectConstructor implements Dependency {
+    private String Dependency;
+
+    @Inject
+    public DependencyWithInjectConstructor(String dependency) {
+        Dependency = dependency;
+    }
+
+    public String getDependency() {
+        return Dependency;
     }
 }
