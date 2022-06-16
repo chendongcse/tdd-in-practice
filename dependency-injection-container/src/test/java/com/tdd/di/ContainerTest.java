@@ -1,5 +1,6 @@
 package com.tdd.di;
 
+import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -102,6 +103,7 @@ class ComponentWithDefaultConstructor implements Component {
 class ComponentWithInjectConstructor implements Component {
     private Dependency dependency;
 
+    @Inject
     public ComponentWithInjectConstructor(Dependency dependency) {
         this.dependency = dependency;
     }
