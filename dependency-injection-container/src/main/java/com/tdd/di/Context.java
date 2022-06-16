@@ -28,6 +28,10 @@ public class Context {
                 .toArray(Constructor<?>[]::new);
         if (injectConstructors.length > 1)
             throw new IllegalComponentException();
+        if (injectConstructors.length == 0 && stream(implementation.getConstructors())
+                .filter(c -> c.getParameters().length == 0).findFirst().map(c -> false).orElse(true)) {
+            throw new IllegalComponentException();
+        }
         providers.put(type, (Provider<Type>) () -> {
             try {
                 Constructor<Implementation> injectConstructor = getInjectConstructor(implementation);
@@ -39,7 +43,7 @@ public class Context {
         });
     }
 
-    private <Type> Constructor<Type> getInjectConstructor(Class<Type> implementation) throws NoSuchMethodException {
+    private <Type> Constructor<Type> getInjectConstructor(Class<Type> implementation){
         Stream<Constructor<?>> injectConstructors = stream(implementation.getConstructors()).filter(c -> c.isAnnotationPresent(Inject.class));
         return (Constructor<Type>) injectConstructors.findFirst().orElseGet(() -> {
             try {
