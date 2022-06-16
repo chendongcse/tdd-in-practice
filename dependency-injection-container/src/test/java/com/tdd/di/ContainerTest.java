@@ -72,6 +72,10 @@ public class ContainerTest {
                 assertNotNull(dependency);
                 assertSame("indirect dependency", ((DependencyWithInjectConstructor) dependency).getDependency());
             }
+            // todo: multi inject constructors
+            // todo: no default constructor and inject constructor
+            // todo: dependencies not exist
+
 
 
         }
