@@ -52,7 +52,7 @@ public class Context {
     }
 
     public <Type> Optional<Type> get_(Class<Type> type) {
-        return null;
+        return  Optional.ofNullable(providers.get(type)).map(provider -> (Type) provider.get());
     }
 }
 
