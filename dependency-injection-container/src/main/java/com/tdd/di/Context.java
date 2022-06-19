@@ -23,12 +23,8 @@ public class Context {
     public <Type, Implementation extends Type>
     void bind(Class<Type> type, Class<Implementation> implementation) {
         Constructor<Implementation> injectConstructor = getInjectConstructor(implementation);
-        providers.put(type, getTypeProvider(injectConstructor));
-    }
-
-    private <Type> Provider<Type> getTypeProvider(Constructor<Type> injectConstructor) {
         // return  () -> getImplmentation(injectConstructor);
-        return  new ConstructorInjectionProvider<Type>(injectConstructor);
+        providers.put(type, new ConstructorInjectionProvider(injectConstructor));
     }
 
     class ConstructorInjectionProvider<T> implements Provider<T> {
