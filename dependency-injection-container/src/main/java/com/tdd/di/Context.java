@@ -20,11 +20,6 @@ public class Context {
         providers.put(type, (Provider<Type>) () -> instance);
     }
 
-    public <Type> Type get(Class<Type> type) {
-        if (!providers.containsKey(type)) throw new ComponentNotFoundException();
-        return (Type) providers.get(type).get();
-    }
-
     public <Type, Implementation extends Type>
     void bind(Class<Type> type, Class<Implementation> implementation) {
         Constructor<Implementation> injectConstructor = getInjectConstructor(implementation);
@@ -49,6 +44,10 @@ public class Context {
                 throw new IllegalComponentException();
             }
         });
+    }
+
+    public <Type> Type get(Class<Type> type) {
+        return get_(type).orElseThrow(DependencyNotFoundException::new);
     }
 
     public <Type> Optional<Type> get_(Class<Type> type) {
