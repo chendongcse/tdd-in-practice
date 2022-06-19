@@ -20,6 +20,7 @@ public class Context {
     }
 
     public <Type> Type get(Class<Type> type) {
+        if (!providers.containsKey(type)) throw new ComponentNotFoundException();
         return (Type) providers.get(type).get();
     }
 
