@@ -5,6 +5,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ContainerTest {
@@ -42,6 +44,12 @@ public class ContainerTest {
                 assertNotNull(instance);
                 assertTrue(instance instanceof ComponentWithDefaultConstructor);
 
+            }
+
+            @Test
+            public void should_return_empty_if_compoenent_not_defined(){
+                Optional<Component> component = context.get_(Component.class);
+                assertTrue(component.isEmpty());
             }
 
             @Test
@@ -86,7 +94,6 @@ public class ContainerTest {
                 });
             }
 
-            // todo: dependencies not exist
             @Test
             public void should_throw_exception_if_dependencies_not_exist() {
                 context.bind(Component.class, ComponentWithInjectConstructor.class);

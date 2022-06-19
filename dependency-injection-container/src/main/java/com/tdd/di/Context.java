@@ -8,6 +8,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
@@ -48,6 +49,10 @@ public class Context {
                 throw new IllegalComponentException();
             }
         });
+    }
+
+    public <Type> Optional<Type> get_(Class<Type> type) {
+        return null;
     }
 }
 
