@@ -23,14 +23,30 @@ public class Context {
     public <Type, Implementation extends Type>
     void bind(Class<Type> type, Class<Implementation> implementation) {
         Constructor<Implementation> injectConstructor = getInjectConstructor(implementation);
-        providers.put(type, (Provider<Type>) () -> {
+        providers.put(type, getTypeProvider(injectConstructor));
+    }
+
+    private <Type> Provider<Type> getTypeProvider(Constructor<Type> injectConstructor) {
+        // return  () -> getImplmentation(injectConstructor);
+        return  new ConstructorInjectionProvider<Type>(injectConstructor);
+    }
+
+    class ConstructorInjectionProvider<T> implements Provider<T> {
+        private Constructor<T> injectConstructor;
+
+        public ConstructorInjectionProvider(Constructor<T> injectConstructor) {
+            this.injectConstructor = injectConstructor;
+        }
+
+        @Override
+        public T get() {
             try {
-                Object[] dependencies = stream(injectConstructor.getParameters()).map(p -> get(p.getType()).orElseThrow(DependencyNotFoundException::new)).toArray(Object[]::new);
-                return (Type) injectConstructor.newInstance(dependencies);
+                Object[] dependencies = stream(injectConstructor.getParameters()).map(p -> Context.this.get(p.getType()).orElseThrow(DependencyNotFoundException::new)).toArray(Object[]::new);
+                return injectConstructor.newInstance(dependencies);
             } catch (InvocationTargetException | InstantiationException | IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
-        });
+        }
     }
 
     private <Type> Constructor<Type> getInjectConstructor(Class<Type> implementation) {
