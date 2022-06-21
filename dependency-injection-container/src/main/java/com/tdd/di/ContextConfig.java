@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 import static java.util.Arrays.asList;
 import static java.util.Arrays.stream;
 
-public class ContextConfig{
+public class ContextConfig {
     private Map<Class<?>, ComponentProvider<?>> providers = new HashMap<>();
     private Map<Class<?>, List<Class<?>>> dependencies = new HashMap<>();
 
@@ -27,16 +27,14 @@ public class ContextConfig{
     public <Type, Implementation extends Type>
     void bind(Class<Type> type, Class<Implementation> implementation) {
         Constructor<Implementation> injectConstructor = getInjectConstructor(implementation);
-        providers.put(type, new ConstructorInjectionProvider(type, injectConstructor));
+        providers.put(type, new ConstructorInjectionProvider<>(type, injectConstructor));
         dependencies.put(type, stream(injectConstructor.getParameters()).map(Parameter::getType).collect(Collectors.toList()));
     }
 
-    public Context getContext(){
-        for(Class<?> component: dependencies.keySet()){
-            for(Class<?> dependency: dependencies.get(component)){
-                if(!dependencies.containsKey(dependency)){
-                    throw new DependencyNotFoundException(component, dependency);
-                }
+    public Context getContext() {
+        for (Class<?> component: dependencies.keySet()) {
+            for (Class<?> dependency: dependencies.get(component)) {
+                if (!dependencies.containsKey(dependency)) throw new DependencyNotFoundException(component, dependency);
             }
         }
         return new Context() {
@@ -47,7 +45,7 @@ public class ContextConfig{
         };
     }
 
-    interface ComponentProvider<T>{
+    interface ComponentProvider<T> {
         T get(Context context);
     }
 
@@ -55,20 +53,18 @@ public class ContextConfig{
         private Class<?> componentType;
         private Constructor<T> injectConstructor;
         private boolean constructing = false;
-
         public ConstructorInjectionProvider(Class<?> componentType, Constructor<T> injectConstructor) {
             this.componentType = componentType;
             this.injectConstructor = injectConstructor;
         }
-
         @Override
         public T get(Context context) {
             if (constructing) throw new CyclicDependenciesFoundException(componentType);
             try {
                 constructing = true;
                 Object[] dependencies = stream(injectConstructor.getParameters())
-                        .map(p -> getContext().get(p.getType())
-                                .orElseThrow(() -> new DependencyNotFoundException(componentType,p.getType())))
+                        .map(p -> context.get(p.getType())
+                                .orElseThrow(() -> new DependencyNotFoundException(componentType, p.getType())))
                         .toArray(Object[]::new);
                 return injectConstructor.newInstance(dependencies);
             } catch (CyclicDependenciesFoundException e) {
@@ -94,4 +90,5 @@ public class ContextConfig{
         });
     }
 }
+
 
