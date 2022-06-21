@@ -6,10 +6,7 @@ import jakarta.inject.Provider;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Parameter;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -36,6 +33,7 @@ public class ContextConfig {
             for (Class<?> dependency: dependencies.get(component)) {
                 if (!dependencies.containsKey(dependency)) throw new DependencyNotFoundException(component, dependency);
             }
+            checkDependencies(component, new Stack<>());
         }
         return new Context() {
             @Override
@@ -43,6 +41,16 @@ public class ContextConfig {
                 return Optional.ofNullable(providers.get(type)).map(provider -> (Type) provider.get(this));
             }
         };
+    }
+
+    private void checkDependencies(Class<?> component, Stack<Class<?>> visisting) {
+        for (Class<?> dependency : dependencies.get(component)) {
+            if (visisting.contains(dependency))
+                throw new CyclicDependenciesFoundException(visisting);
+            visisting.push(dependency);
+            checkDependencies(dependency, visisting);
+            visisting.pop();
+        }
     }
 
     interface ComponentProvider<T> {
